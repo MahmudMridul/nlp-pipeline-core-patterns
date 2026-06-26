@@ -2,6 +2,7 @@ from collections.abc import Generator
 import logging
 import time
 from functools import wraps
+from managed_file import ManagedFile
 
 def timing(func):
     @wraps(func)
@@ -26,9 +27,10 @@ def logger(func):
 @logger
 def read_file(file_path: str) -> Generator[str, None, None]:
     try:
-        with open(file=file_path, mode="r", encoding='utf-8') as file:
+        with ManagedFile(path=file_path, mode="r") as file:
             for line in file:
                 yield line.rstrip("\n")
+            # raise OSError
     except FileNotFoundError as f:
         logging.error(f"File not found: {f}")
         raise
