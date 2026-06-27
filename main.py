@@ -3,6 +3,7 @@ import logging
 import time
 from functools import wraps
 from managed_file import ManagedFile
+from text_processor import TextProcessor
 
 def timing(func):
     @wraps(func)
@@ -38,6 +39,8 @@ def read_file(file_path: str) -> Generator[str, None, None]:
         logging.error(f"OS error while reading file: {os}")
         raise
 
+@timing
+@logger
 def append_file(file_path : str, string : str, n : int = 100):
     try:
         with ManagedFile(path=file_path, mode="a") as file:
@@ -55,11 +58,16 @@ def append_file(file_path : str, string : str, n : int = 100):
 def main():
     FILE : str = "file.txt"
     LINES : int = 1000
-    # gen = read_file(FILE)
+    string: str = "a quick brown fox jumps over the lazy dog"
+    gen = read_file(FILE)
     
-    # for line in gen:
-    #     print(line)
-    # append_file(FILE, "a quick brown fox jumps over the lazy dog", LINES)
+    processor = TextProcessor()
+
+    for line in gen:
+        word_count = processor.count_words(line)
+        char_count = processor.count_chars(line)
+        print(f"Words: {word_count} | Characters: {char_count}")
+    # append_file(FILE, string, LINES)
 
 if __name__ == "__main__":
     main()
