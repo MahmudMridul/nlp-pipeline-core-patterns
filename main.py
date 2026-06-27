@@ -38,15 +38,28 @@ def read_file(file_path: str) -> Generator[str, None, None]:
         logging.error(f"OS error while reading file: {os}")
         raise
 
+def append_file(file_path : str, string : str, n : int = 100):
+    try:
+        with ManagedFile(path=file_path, mode="a") as file:
+            for i in range(n):
+                file.write(f"{string}\n")
+    except FileNotFoundError as f:
+        logging.error(f"File not found: {f}")
+        raise
+    except OSError as os:
+        logging.error(f"OS error while reading file: {os}")
+        raise
+
 
 
 def main():
-    FILE = "file.txt"
-    gen = read_file(FILE)
+    FILE : str = "file.txt"
+    LINES : int = 1000
+    # gen = read_file(FILE)
     
-    for line in gen:
-        print(line)
-    
+    # for line in gen:
+    #     print(line)
+    # append_file(FILE, "a quick brown fox jumps over the lazy dog", LINES)
 
 if __name__ == "__main__":
     main()
